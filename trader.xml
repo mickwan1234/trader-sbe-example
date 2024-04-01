@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbe:messageSchema xmlns:sbe="http://fixprotocol.io/2016/sbe"
+                   package="trader"
+                   id="1"
+                   version="1"
+                   semanticVersion="5.2"
+                   description="Example schema illustrating a basic trading message structure."
+                   byteOrder="littleEndian">
+    <types>
+        <type name="currencyCode" primitiveType="char" length="3" characterEncoding="ASCII"/>
+        <type name="orderQty" primitiveType="int32"/>
+        <type name="price" primitiveType="float"/>
+        <type name="orderId" primitiveType="int64"/>
+        <type name="tradeDate" primitiveType="uint32"/>
+        <enum name="orderType" encodingType="uint8">
+            <validValue name="MARKET">1</validValue>
+            <validValue name="LIMIT">2</validValue>
+            <validValue name="STOP">3</validValue>
+            <validValue name="STOP_LIMIT">4</validValue>
+        </enum>
+        <enum name="orderSide" encodingType="char">
+            <validValue name="BUY">B</validValue>
+            <validValue name="SELL">S</validValue>
+        </enum>
+        <composite name="monetaryAmount">
+            <type name="amount" primitiveType="float"/>
+            <ref name="currency" type="currencyCode"/>
+        </composite>
+        <composite name="varAsciiEncoding" description="Variable length ASCII String.">
+            <type name="length" primitiveType="uint32" maxValue="1073741824"/>
+            <type name="varData" primitiveType="uint8" length="0" characterEncoding="ASCII"/>
+        </composite>
+        <composite name="messageHeader" description="Standard message header.">
+            <type name="blockLength" primitiveType="uint16"/>
+            <type name="templateId" primitiveType="uint16"/>
+            <type name="schemaId" primitiveType="uint16"/>
+            <type name="version" primitiveType="uint16"/>
+        </composite>
+    </types>
+    <sbe:message name="TradeOrder" id="1" description="A basic trade order message">
+        <field name="messageHeader" id="0" type="messageHeader"/>
+        <field name="orderId" id="1" type="orderId"/>
+        <field name="tradeDate" id="2" type="tradeDate"/>
+        <field name="orderQty" id="3" type="orderQty"/>
+        <field name="price" id="4" type="price"/>
+        <field name="orderType" id="5" type="orderType"/>
+        <field name="orderSide" id="6" type="orderSide"/>
+        <data name="symbol" id="7" type="varAsciiEncoding"/>
+        <data name="executionVenue" id="8" type="varAsciiEncoding"/>
+    </sbe:message>
+</sbe:messageSchema>
